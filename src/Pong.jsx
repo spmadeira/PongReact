@@ -38,9 +38,9 @@ class Pong extends React.Component {
                 player: 0,
                 AI: 0,
             },
-            scoreX: 320,
+            scoreX: 200,
             scoreY: 100,
-            scoreFont: "30px Arial",
+            scoreFont: "60px Consolas",
         }
     }
 
@@ -261,9 +261,9 @@ class Pong extends React.Component {
 
     drawScore(ctx){
         ctx.fillStyle = "white";
-        ctx.font = "30px Consolas";
+        ctx.font = this.state.scoreFont;
         ctx.fillText(this.state.score.player, this.state.scoreX, this.state.scoreY);
-        ctx.fillText(this.state.score.AI, this.state.scoreX+(this.state.screenW/2), this.state.scoreY);
+        ctx.fillText(this.state.score.AI, this.state.screenW-this.state.scoreX, this.state.scoreY);
     }
 
     render() {
