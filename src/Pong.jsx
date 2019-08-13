@@ -10,10 +10,10 @@ class Pong extends React.Component {
             playerH: 180,
             playerW: 30,
             playerX: 50,
-            playerY: 100,
+            playerY: 360,
             playerS: 10,
             aiX: 1230,
-            aiY: 100,
+            aiY: 360,
             
 
             ballWH: 30,
@@ -51,6 +51,12 @@ class Pong extends React.Component {
         this.interval = setInterval(() => this.fixedUpdate(ctx), 16.666667);
         document.addEventListener("keydown", this.keyDown.bind(this), false);
         document.addEventListener("keyup", this.keyUp.bind(this), false);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+        document.removeEventListener("keydown", this.keyDown, false);
+        document.removeEventListener("keyup", this.keyUp, false);
     }
 
     keyUp(e){
@@ -95,14 +101,9 @@ class Pong extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        clearInterval(this.interval);
-        document.removeEventListener("keydown", this.keyDown, false);
-        document.removeEventListener("keyup", this.keyUp, false);
-    }
-
     fixedUpdate(ctx) {
         this.draw(ctx);
+        
         this.moveBall();
         this.movePlayer();
         this.moveAI();
@@ -113,12 +114,10 @@ class Pong extends React.Component {
     }
 
     moveBall(){
-        //this.state.ballX += this.state.ballDir.x * this.state.ballS;
         this.setState({
             ballX: this.state.ballX+this.state.ballDir.x * this.state.ballS,
             ballY: this.state.ballY+this.state.ballDir.y*this.state.ballS,
         })
-        //this.state.ballY += this.state.ballDir.y * this.state.ballS;
     }
 
     movePlayer(){
@@ -135,6 +134,9 @@ class Pong extends React.Component {
 
     moveAI(){
         let relativePos = this.state.ballY - this.state.aiY;
+
+        if (Math.abs(relativePos) < this.state.playerS)
+            return;
 
         this.setState({
             aiY: this.state.aiY + this.state.playerS*Math.sign(relativePos),
