@@ -122,8 +122,14 @@ class Pong extends React.Component {
     }
 
     movePlayer(){
+        let newPos = this.state.playerY + (this.state.keys.down - this.state.keys.up) * this.state.playerS
+        if (newPos < 0)
+            newPos = 0;
+        if (newPos > this.state.screenH)
+            newPos = this.state.screenH;
+
         this.setState({
-            playerY: this.state.playerY + (this.state.keys.down - this.state.keys.up) * this.state.playerS
+            playerY: newPos,
         })
     }
 
@@ -163,7 +169,7 @@ class Pong extends React.Component {
         if (ballLeftBound <= playerRightBound){
             this.setState({
                 ballDir: {
-                    x: -this.state.ballDir.x,
+                    x: 1,
                     y: this.state.ballDir.y,
                 }
             })
@@ -184,7 +190,7 @@ class Pong extends React.Component {
         if (ballRightBound >= aiLeftBound){
             this.setState({
                 ballDir: {
-                    x: -this.state.ballDir.x,
+                    x: -1,
                     y: this.state.ballDir.y,
                 }
             })
