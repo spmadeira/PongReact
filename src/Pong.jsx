@@ -17,8 +17,12 @@ class Pong extends React.Component {
             
 
             ballWH: 30,
-            ballX: 1280 / 2,
-            ballY: 720 / 2,
+            ballInit: {
+                x: 640,
+                y: 360,
+            },
+            ballX: 640,
+            ballY: 360,
             ballS: 5,
             ballDir: {
                 x: -1,
@@ -29,6 +33,14 @@ class Pong extends React.Component {
                 up: 0,
                 down: 0,
             },
+
+            score: {
+                player: 0,
+                AI: 0,
+            },
+            scoreX: 320,
+            scoreY: 100,
+            scoreFont: "30px Arial",
         }
     }
 
@@ -97,6 +109,7 @@ class Pong extends React.Component {
         this.ballScreenColision();
         this.ballPlayerCollision();
         this.ballAICollision();
+        this.ballGoalCollision();
     }
 
     moveBall(){
@@ -178,12 +191,40 @@ class Pong extends React.Component {
         }
     }
 
+    ballGoalCollision(){
+        let ballLeftBound = this.state.ballX-(this.state.ballWH/2);
+        let ballRightBound = this.state.ballX-(this.state.ballWH/2);
+
+        if (ballLeftBound <= 0){
+            this.setState({
+                score: {
+                    player: this.state.score.player,
+                    AI: this.state.score.AI+1,
+                },
+                ballX: this.state.ballInit.x,
+                ballY: this.state.ballInit.y, 
+            })
+        }
+
+        if (ballRightBound >= this.state.screenW){
+            this.setState({
+                score: {
+                    player: this.state.score.player+1,
+                    AI: this.state.score.AI,
+                },
+                ballX: this.state.ballInit.x,
+                ballY: this.state.ballInit.y, 
+            })
+        }
+    }
+
     draw(ctx) {
         ctx.clearRect(0, 0, this.state.screenW, this.state.screenH);
         this.drawBackground(ctx);
         this.drawBall(ctx);
         this.drawPlayer(ctx);
         this.drawAI(ctx);
+        this.drawScore(ctx);
     }
 
     drawBackground(ctx) {
@@ -210,6 +251,13 @@ class Pong extends React.Component {
         let x = this.state.aiX - this.state.playerW / 2;
         let y = this.state.aiY - this.state.playerH / 2;
         ctx.fillRect(x, y, this.state.playerW, this.state.playerH);
+    }
+
+    drawScore(ctx){
+        ctx.fillStyle = "white";
+        ctx.font = "30px Consolas";
+        ctx.fillText(this.state.score.player, this.state.scoreX, this.state.scoreY);
+        ctx.fillText(this.state.score.AI, this.state.scoreX+(this.state.screenW/2), this.state.scoreY);
     }
 
     render() {
