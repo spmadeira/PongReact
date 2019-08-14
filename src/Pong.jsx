@@ -127,7 +127,7 @@ class Pong extends React.Component {
     moveBall(){
         this.setState({
             ballX: this.state.ballX+this.state.ballDir.x * this.state.ballS,
-            ballY: this.state.ballY+this.state.ballDir.y*this.state.ballS,
+            ballY: this.state.ballY+this.state.ballDir.y * this.state.ballS,
         })
     }
 
