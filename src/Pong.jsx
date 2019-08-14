@@ -167,8 +167,8 @@ class Pong extends React.Component {
     }
     
     ballPlayerCollision(){
-        let ballIsAbovePlayer = (this.state.ballY+(this.state.ballWH/2)) > (this.state.playerY+this.state.playerH/2);
-        let ballIsUnderPlayer = (this.state.ballY-(this.state.ballWH/2)) < (this.state.playerY-this.state.playerH/2);
+        let ballIsAbovePlayer = (this.state.ballY+this.state.ballWH/2) > (this.state.playerY+this.state.playerH/2);
+        let ballIsUnderPlayer = (this.state.ballY-this.state.ballWH/2) < (this.state.playerY-this.state.playerH/2);
 
         if (ballIsAbovePlayer || ballIsUnderPlayer){
             return;
