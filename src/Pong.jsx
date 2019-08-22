@@ -14,16 +14,17 @@ class Pong extends React.Component {
             playerS: 10,
             aiX: 1230,
             aiY: 360,
-            
+
 
             ballWH: 30,
             ballInit: {
                 x: 640,
                 y: 360,
+                s: 8,
             },
             ballX: 640,
             ballY: 360,
-            ballS: 5,
+            ballS: 8,
             ballDir: {
                 x: -1,
                 y: -1,
@@ -61,9 +62,9 @@ class Pong extends React.Component {
         document.removeEventListener("keyup", this.keyUp, false);
     }
 
-    keyUp(e){
+    keyUp(e) {
         let key = e.keyCode;
-        if (key === 38){
+        if (key === 38) {
             this.setState({
                 keys: {
                     up: 0,
@@ -72,7 +73,7 @@ class Pong extends React.Component {
             })
         }
 
-        if (key === 40){
+        if (key === 40) {
             this.setState({
                 keys: {
                     up: this.state.keys.up,
@@ -82,9 +83,9 @@ class Pong extends React.Component {
         }
     }
 
-    keyDown(e){
+    keyDown(e) {
         let key = e.keyCode;
-        if (key === 38){
+        if (key === 38) {
             this.setState({
                 keys: {
                     up: 1,
@@ -93,7 +94,7 @@ class Pong extends React.Component {
             })
         }
 
-        if (key === 40){
+        if (key === 40) {
             this.setState({
                 keys: {
                     up: this.state.keys.up,
@@ -102,7 +103,7 @@ class Pong extends React.Component {
             })
         }
 
-        if (key === 27){
+        if (key === 27) {
             this.setState({
                 paused: !this.state.paused
             })
@@ -111,7 +112,7 @@ class Pong extends React.Component {
 
     fixedUpdate(ctx) {
         this.draw(ctx);
-        
+
         if (this.state.paused)
             return;
 
@@ -124,26 +125,26 @@ class Pong extends React.Component {
         this.ballGoalCollision();
     }
 
-    moveBall(){
+    moveBall() {
         this.setState({
-            ballX: this.state.ballX+this.state.ballDir.x * this.state.ballS,
-            ballY: this.state.ballY+this.state.ballDir.y*this.state.ballS,
+            ballX: this.state.ballX + this.state.ballDir.x * this.state.ballS,
+            ballY: this.state.ballY + this.state.ballDir.y * this.state.ballS,
         })
     }
 
-    movePlayer(){
+    movePlayer() {
         let newPos = this.state.playerY + (this.state.keys.down - this.state.keys.up) * this.state.playerS
         if (newPos < 0)
             newPos = 0;
         if (newPos > this.state.screenH)
             newPos = this.state.screenH;
-
+    
         this.setState({
             playerY: newPos,
         })
     }
 
-    moveAI(){
+    moveAI() {
         let relativePos = this.state.ballY - this.state.aiY;
         let speed = Math.abs(relativePos) < this.state.playerS ? relativePos : this.state.playerS * Math.sign(relativePos);
 
@@ -152,11 +153,11 @@ class Pong extends React.Component {
         })
     }
 
-    ballScreenColision(){
-        let ballLowerBound = this.state.ballY+(this.state.ballWH/2);
-        let ballUpperBound = this.state.ballY-(this.state.ballWH/2);
+    ballScreenColision() {
+        let ballLowerBound = this.state.ballY + (this.state.ballWH / 2);
+        let ballUpperBound = this.state.ballY - (this.state.ballWH / 2);
 
-        if (ballUpperBound <= 0 || ballLowerBound >= this.state.screenH){
+        if (ballUpperBound <= 0 || ballLowerBound >= this.state.screenH) {
             this.setState({
                 ballDir: {
                     x: this.state.ballDir.x,
@@ -165,20 +166,21 @@ class Pong extends React.Component {
             })
         }
     }
-    
-    ballPlayerCollision(){
-        let ballIsAbovePlayer = (this.state.ballY+(this.state.ballWH/2)) > (this.state.playerY+this.state.playerH/2);
-        let ballIsUnderPlayer = (this.state.ballY-(this.state.ballWH/2)) < (this.state.playerY-this.state.playerH/2);
 
-        if (ballIsAbovePlayer || ballIsUnderPlayer){
+    ballPlayerCollision() {
+        let ballIsAbovePlayer = (this.state.ballY + (this.state.ballWH / 2)) > (this.state.playerY + this.state.playerH / 2);
+        let ballIsUnderPlayer = (this.state.ballY - (this.state.ballWH / 2)) < (this.state.playerY - this.state.playerH / 2);
+
+        if (ballIsAbovePlayer || ballIsUnderPlayer) {
             return;
         }
 
-        let ballLeftBound = (this.state.ballX-(this.state.ballWH/2));
-        let playerRightBound = (this.state.playerX+this.state.playerW/2);
+        let ballLeftBound = (this.state.ballX - (this.state.ballWH / 2));
+        let playerRightBound = (this.state.playerX + this.state.playerW / 2);
 
-        if (ballLeftBound <= playerRightBound){
+        if (ballLeftBound <= playerRightBound) {
             this.setState({
+                ballS: this.state.ballS + 1,
                 ballDir: {
                     x: 1,
                     y: this.state.ballDir.y,
@@ -187,19 +189,20 @@ class Pong extends React.Component {
         }
     }
 
-    ballAICollision(){
-        let ballIsAboveAI = (this.state.ballY+(this.state.ballWH/2)) > (this.state.aiY+this.state.playerH/2);
-        let ballIsUnderAI = (this.state.ballY-(this.state.ballWH/2)) < (this.state.aiY-this.state.playerH/2);
+    ballAICollision() {
+        let ballIsAboveAI = (this.state.ballY + (this.state.ballWH / 2)) > (this.state.aiY + this.state.playerH / 2);
+        let ballIsUnderAI = (this.state.ballY - (this.state.ballWH / 2)) < (this.state.aiY - this.state.playerH / 2);
 
-        if (ballIsAboveAI || ballIsUnderAI){
+        if (ballIsAboveAI || ballIsUnderAI) {
             return;
         }
 
-        let ballRightBound = (this.state.ballX+(this.state.ballWH/2));
-        let aiLeftBound = (this.state.aiX-this.state.playerW/2);
+        let ballRightBound = (this.state.ballX + (this.state.ballWH / 2));
+        let aiLeftBound = (this.state.aiX - this.state.playerW / 2);
 
-        if (ballRightBound >= aiLeftBound){
+        if (ballRightBound >= aiLeftBound) {
             this.setState({
+                ballS: this.state.ballS + 1,
                 ballDir: {
                     x: -1,
                     y: this.state.ballDir.y,
@@ -208,29 +211,31 @@ class Pong extends React.Component {
         }
     }
 
-    ballGoalCollision(){
-        let ballLeftBound = this.state.ballX-(this.state.ballWH/2);
-        let ballRightBound = this.state.ballX-(this.state.ballWH/2);
+    ballGoalCollision() {
+        let ballLeftBound = this.state.ballX - (this.state.ballWH / 2);
+        let ballRightBound = this.state.ballX - (this.state.ballWH / 2);
 
-        if (ballLeftBound <= 0){
+        if (ballLeftBound <= 0) {
             this.setState({
+                ballS: this.state.ballInit.s,
                 score: {
                     player: this.state.score.player,
-                    AI: this.state.score.AI+1,
+                    AI: this.state.score.AI + 1,
                 },
                 ballX: this.state.ballInit.x,
-                ballY: this.state.ballInit.y, 
+                ballY: this.state.ballInit.y,
             })
         }
 
-        if (ballRightBound >= this.state.screenW){
+        if (ballRightBound >= this.state.screenW) {
             this.setState({
+                ballS: this.state.ballInit.s,
                 score: {
-                    player: this.state.score.player+1,
+                    player: this.state.score.player + 1,
                     AI: this.state.score.AI,
                 },
                 ballX: this.state.ballInit.x,
-                ballY: this.state.ballInit.y, 
+                ballY: this.state.ballInit.y,
             })
         }
     }
@@ -257,33 +262,33 @@ class Pong extends React.Component {
         ctx.fillRect(x, y, this.state.ballWH, this.state.ballWH);
     }
 
-    drawPlayer(ctx){
+    drawPlayer(ctx) {
         ctx.fillStyle = "white";
         let x = this.state.playerX - this.state.playerW / 2;
         let y = this.state.playerY - this.state.playerH / 2;
         ctx.fillRect(x, y, this.state.playerW, this.state.playerH);
     }
 
-    drawAI(ctx){
+    drawAI(ctx) {
         ctx.fillStyle = "blue";
         let x = this.state.aiX - this.state.playerW / 2;
         let y = this.state.aiY - this.state.playerH / 2;
         ctx.fillRect(x, y, this.state.playerW, this.state.playerH);
     }
 
-    drawScore(ctx){
+    drawScore(ctx) {
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.font = this.state.scoreFont;
         ctx.fillText(this.state.score.player, this.state.scoreX, this.state.scoreY);
-        ctx.fillText(this.state.score.AI, this.state.screenW-this.state.scoreX, this.state.scoreY);
+        ctx.fillText(this.state.score.AI, this.state.screenW - this.state.scoreX, this.state.scoreY);
     }
 
-    drawPaused(ctx){
+    drawPaused(ctx) {
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.font = this.state.scoreFont;
-        ctx.fillText("PAUSED", this.state.screenW/2, this.state.screenH/2);
+        ctx.fillText("PAUSED", this.state.screenW / 2, this.state.screenH / 2);
     }
 
     render() {
